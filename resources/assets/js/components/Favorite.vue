@@ -1,5 +1,5 @@
 <template>
-  <button :class="classes" @click="toggle" :disabled="authCheck">
+  <button :class="classes" @click="toggle" :disabled="!this.user">
     <span class="glyphicon glyphicon-heart"></span>
     <span v-text="count"></span>
   </button>
@@ -12,8 +12,7 @@
         data() {
             return {
                 count: this.reply.favorites_count,
-                active: this.reply.is_favorited,
-                auth: this.user
+                active: this.reply.is_favorited
             }
         },
 
@@ -27,10 +26,6 @@
 
             endpoint() {
                 return '/replies/' + this.reply.id + '/favorites'
-            },
-
-            authCheck() {
-                return !this.auth;
             }
         },
 
