@@ -1,5 +1,5 @@
 <template>
-  <button :class="classes" @click="toggle" :disabled="!this.user">
+  <button :class="classes" @click="toggle" :disabled="signedIn">
     <span class="glyphicon glyphicon-heart"></span>
     <span v-text="count"></span>
   </button>
@@ -26,6 +26,10 @@
 
             endpoint() {
                 return '/replies/' + this.reply.id + '/favorites'
+            },
+
+            signedIn() {
+                return !window.App.signedIn;
             }
         },
 

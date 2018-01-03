@@ -10,7 +10,8 @@ class CreateThreadsTest extends TestCase
 {
     use RefreshDatabase;
 
-    function testGuestMayNotCreateThreads()
+    /** @test */
+    function guest_may_not_create_threads()
     {
         $this->withExceptionHandling();
 
@@ -21,7 +22,8 @@ class CreateThreadsTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    function testAnAuthenticateUserCanCreateNewForumThreads()
+    /** @test */
+    function an_authenticate_user_can_create_new_forum_threads()
     {
         $this->signIn();
 
@@ -34,19 +36,22 @@ class CreateThreadsTest extends TestCase
             ->assertSee($thread->body);
     }
 
-    function testAThreadRequiresATitle()
+    /** @test */
+    function a_thread_requires_a_title()
     {
         $this->publishThread(['title' => null])
             ->assertSessionHasErrors('title');
     }
 
-    function testAThreadRequiresABody()
+    /** @test */
+    function a_thread_requires_a_body()
     {
         $this->publishThread(['body' => null])
             ->assertSessionHasErrors('body');
     }
 
-    function testAThreadRequiresAValidChannel()
+    /** @test */
+    function a_thread_requires_a_valid_channel()
     {
         factory('App\Channel', 2)->create();
 
@@ -60,7 +65,8 @@ class CreateThreadsTest extends TestCase
             ->assertSessionHasErrors('channel_id');
     }
 
-    function testUnauthorizedUsersMayNotDeleteThreads()
+    /** @test */
+    function unauthorized_users_may_not_delete_threads()
     {
         $this->withExceptionHandling();
 
@@ -72,7 +78,8 @@ class CreateThreadsTest extends TestCase
         $this->delete($thread->path())->assertStatus(403);
     }
 
-    function testAuthorizeUsersCanDeleteThreads()
+    /** @test */
+    function authorize_users_can_delete_threads()
     {
         $this->signIn();
 

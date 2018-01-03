@@ -9,14 +9,16 @@ class FavoritesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testGuestsCanNotFavoriteAnything()
+    /** @test */
+    public function guests_can_not_favorite_anything()
     {
         $this->withExceptionHandling()
             ->post('/replies/1/favorites')
             ->assertRedirect('/login');
     }
 
-    public function testAnAuthenticateUserCanFavoriteAReply()
+    /** @test */
+    public function an_authenticate_user_can_favorite_a_reply()
     {
         $this->signIn();
 
@@ -31,7 +33,8 @@ class FavoritesTest extends TestCase
         $this->assertCount(0, $reply->fresh()->favorites);
     }
 
-    public function testAnAuthenticateUserCanUnfavoritesAReply()
+    /** @test */
+    public function an_authenticate_user_can_unfavorites_a_reply()
     {
         $this->signIn();
 
@@ -42,7 +45,8 @@ class FavoritesTest extends TestCase
         $this->assertCount(1, $reply->favorites);
     }
 
-    public function testAnAuthenticateUserMayOnlyFavoriteAReplyOnce()
+    /** @test */
+    public function an_authenticate_user_may_only_favorite_a_reply_once()
     {
         $this->signIn();
 

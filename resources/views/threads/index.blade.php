@@ -10,7 +10,13 @@
               <div class="article-header clearfix">
                 <h4>
                   <a href="{{ $thread->path() }}">
-                    {{ $thread->title }}
+                    @if(auth()->user() && $thread->hasUpdateFor(auth()->user()))
+                      <strong>
+                        {{ $thread->title }}
+                      </strong>
+                    @else
+                      {{ $thread->title }}
+                    @endif
                   </a>
                 </h4>
 

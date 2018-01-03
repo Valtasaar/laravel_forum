@@ -11,14 +11,16 @@ class ParticipateInForumTest extends TestCase
 {
     use RefreshDatabase;
 
-    function testUnauthenticatedUsersMayNotAddReplies()
+    /** @test */
+    function unauthenticated_users_may_not_add_replies()
     {
         $this->withExceptionHandling()
             ->post('/threads/channel/1/replies', [])
             ->assertRedirect('/login');
     }
 
-    function testAnAuthenticatedUserCanRockTheForum()
+    /** @test */
+    function an_authenticated_user_can_rock_the_forum()
     {
         $this->signIn();
 
@@ -28,20 +30,23 @@ class ParticipateInForumTest extends TestCase
         $this->post($thread->path() . '/replies', $reply->toArray());
 
         $this->get($thread->path())->assertSee($reply->body);
+        $this->assertEquals(1, $thread->fresh()->replies_count);
     }
-    
-    function testAReplyRequiresABody()
+
+    /** @test */
+    function a_reply_requires_a_body()
     {
         $this->withExceptionHandling()->signIn();
 
         $thread = create('App\Thread');
         $reply = make('App\Reply', ['body' => null]);
 
-        $this->post($thread->path() . '/replies', $reply->toArray())
-            ->assertSessionHasErrors('body');
+        $this->json('post', $thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
     }
 
-    function testUnauthorizedUsersCannotDeleteReplies()
+    /** @test */
+    function unauthorized_users_cannot_delete_replies()
     {
         $this->withExceptionHandling();
 
@@ -54,7 +59,8 @@ class ParticipateInForumTest extends TestCase
             ->assertStatus(403);
     }
 
-    function testAuthorizedUsersCanDeleteReplies()
+    /** @test */
+    function authorized_users_can_delete_replies()
     {
         $this->signIn();
 
@@ -63,9 +69,11 @@ class ParticipateInForumTest extends TestCase
         $this->delete('/replies/' . $reply->id)->assertStatus(302);
 
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        $this->assertEquals(0, $reply->thread->fresh()->replies_count);
     }
 
-    function testUnauthorizedUsersCannotUpdateReplies()
+    /** @test */
+    function unauthorized_users_cannot_update_replies()
     {
         $this->withExceptionHandling();
 
@@ -78,7 +86,8 @@ class ParticipateInForumTest extends TestCase
             ->assertStatus(403);
     }
 
-    function testAuthorizedUsersCanUpdateReplies()
+    /** @test */
+    function authorized_users_can_update_replies()
     {
         $this->signIn();
 
@@ -89,5 +98,38 @@ class ParticipateInForumTest extends TestCase
         $this->patch('/replies/' . $reply->id, ['body' => $body]);
 
         $this->assertDatabaseHas('replies', ['id' => $reply->id, 'body' => $body]);
+    }
+
+    /** @test */
+    function a_replies_that_contain_spam_may_not_be_created()
+    {
+        $this->withExceptionHandling();
+
+        $this->signIn();
+
+        $thread = create('App\Thread');
+
+        $reply = make('App\Reply', ['body' => 'Yahoo Customer Support']);
+
+        $this->json('post', $thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
+    }
+
+    /** @test */
+    function user_may_only_reply_a_max_of_once_per_minute()
+    {
+        $this->withExceptionHandling();
+
+        $this->signIn();
+
+        $thread = create('App\Thread');
+
+        $reply = make('App\Reply', ['body' => 'My reply']);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(200);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(429);
     }
 }

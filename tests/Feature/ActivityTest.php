@@ -11,7 +11,8 @@ class ActivityTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testRecordActivityWhenAThreadIsCreated()
+    /** @test */
+    public function record_activity_when_a_thread_is_created()
     {
         $this->signIn();
 
@@ -29,7 +30,8 @@ class ActivityTest extends TestCase
         $this->assertEquals($activity->subject->id, $thread->id);
     }
 
-    public function testRecordActivityWhenAReplyIsCreated()
+    /** @test */
+    public function record_activity_when_a_reply_is_created()
     {
         $this->signIn();
 
@@ -38,7 +40,8 @@ class ActivityTest extends TestCase
         $this->assertEquals(2, Activity::count());
     }
 
-    function testFetchesAFeedForAnyUser()
+    /** @test */
+    function fetches_a_feed_for_any_user()
     {
         $this->signIn();
 

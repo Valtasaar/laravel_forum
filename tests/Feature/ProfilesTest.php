@@ -9,15 +9,17 @@ class ProfilesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testAUserHasAProfile()
+    /** @test */
+    function a_user_has_a_profile()
     {
         $user = create('App\User');
 
         $this->get('/profile/' . $user->name)
             ->assertSee($user->name);
     }
-    
-    function testProfileDisplayAllThreadsByUser()
+
+    /** @test */
+    function profile_display_all_threads_by_user()
     {
         $this->signIn();
 

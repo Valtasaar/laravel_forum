@@ -9,7 +9,8 @@ class ChannelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testAChannelConsistOfThreads()
+    /** @test */
+    function a_channel_consist_of_threads()
     {
         $cannel = create('App\Channel');
         $thread = create('App\Thread', ['channel_id' => $cannel->id]);

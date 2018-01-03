@@ -1,3 +1,4 @@
+{{--
 <reply inline-template :attributes="{{ $reply }}" v-cloak>
   <div id="reply-{{ $reply->id }}" class="panel panel-default">
     <div class="panel-heading clearfix">
@@ -33,4 +34,4 @@
       </div>
     @endcan
   </div>
-</reply>
+</reply>--}}

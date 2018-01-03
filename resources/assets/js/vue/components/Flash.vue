@@ -1,6 +1,11 @@
 <template>
-    <div v-bind:class="[alertClass]" class="alert alert-flash" role="alert" v-show="show">
-        {{ body }}
+    <div
+        :class="'alert-'+level"
+        class="alert alert-flash"
+        role="alert"
+        v-show="show"
+        v-text="body"
+    >
     </div>
 </template>
 
@@ -11,8 +16,8 @@
         data() {
             return {
                 body: '',
-                show: false,
-                alertClass: 'alert-success'
+                level: 'success',
+                show: false
             }
         },
 
@@ -25,12 +30,10 @@
         },
 
         methods: {
-            flash(message, type) {
-                this.body = message;
+            flash(data) {
+                this.body = data.message;
+                this.level = data.level;
                 this.show = true;
-                if (type) {
-                    this.alertClass = 'alert-' + type;
-                }
 
                 this.hide();
             },

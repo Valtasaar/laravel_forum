@@ -13,6 +13,14 @@
   <!-- Styles -->
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+  <!-- Scripts -->
+  <script>
+      window.App = {!! json_encode([
+            'user' => auth()->user(),
+            'signedIn' => auth()->check()
+        ]) !!};
+  </script>
+
   <style>
     .article-header a {
       float: right;

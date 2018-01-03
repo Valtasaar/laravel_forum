@@ -9,9 +9,16 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+Vue.prototype.authorize = function (handler) {
+    let user = window.App.user;
+
+    return user ? handler(user) : false;
+};
+
 window.events = new Vue();
-window.flash = function (message, type) {
-    window.events.$emit('flash', message, type);
+
+window.flash = function (message, level = 'success') {
+    window.events.$emit('flash', { message, level });
 };
 
 /**
@@ -20,10 +27,11 @@ window.flash = function (message, type) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('flash', require('./components/Flash.vue'));
-Vue.component('reply', require('./components/Reply.vue'));
+Vue.component('flash', require('./vue/components/Flash.vue'));
+Vue.component('thread-view', require('./vue/pages/Thread.vue'));
+Vue.component('paginator', require('./vue/components/Paginator.vue'));
+Vue.component('user-notifications', require('./vue/components/UserNotifications.vue'));
 
 const app = new Vue({
     el: '#app'
 });
-
