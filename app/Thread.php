@@ -46,8 +46,6 @@ class Thread extends Model
 
         event(new ThreadReceivedNewReply($reply));
 
-        $this->notifySubscribers($reply);
-
         return $reply;
     }
 
